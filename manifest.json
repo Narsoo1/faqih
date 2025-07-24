@@ -1,8 +1,7 @@
 {
   "name": "QIH",
-  "short_name": "Qih",
-  "description": "A simple chat application built with Firebase and web technologies.",
-  "id": "/",
+  "short_name": "QIH",
+  "description": "A simple chat application built with Firebase and PWA support.",
   "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
@@ -10,6 +9,9 @@
   "theme_color": "#000000",
   "orientation": "portrait",
   "lang": "id",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "categories": ["chat", "social"],
   "icons": [
     {
       "src": "faqih.png",
@@ -22,15 +24,20 @@
       "type": "image/png"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "Buka Obrolan",
+      "short_name": "Obrolan",
+      "url": "/chat.html",
+      "icons": [{ "src": "faqih.png", "sizes": "96x96", "type": "image/png" }]
+    }
+  ],
   "screenshots": [
     {
       "src": "oke.png",
-      "type": "image/png",
       "sizes": "540x720",
-      "label": "Beranda ChatApp"
+      "type": "image/png",
+      "label": "Tampilan utama ChatApp"
     }
-  ],
-  "launch_handler": {
-    "client_mode": "auto"
-  }
+  ]
 }
