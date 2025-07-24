@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat-Qih</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #111827;
+      color: white;
+      font-family: sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      background: #1f2937;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header button {
+      font-size: 20px;
+      background: none;
+      border: none;
+      color: #60a5fa;
+      cursor: pointer;
+      margin-right: 12px;
+    }
+    header .name {
+      font-size: 18px;
+      font-weight: bold;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    header .typing {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-left: auto;
+    }
+    #messages {
+      height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg {
+      display: flex;
+    }
+    .msg.me {
+      justify-content: flex-end;
+    }
+    .msg.you {
+      justify-content: flex-start;
+    }
+    .bubble {
+      max-width: 75%;
+      background: #1f2937;
+      padding: 8px 12px;
+      border-radius: 12px;
+      position: relative;
+    }
+    .msg.me .bubble {
+      background: #2563eb;
+      color: white;
+    }
+    .text {
+      word-wrap: break-word;
+    }
+    .meta {
+      font-size: 12px;
+      margin-top: 4px;
+      text-align: right;
+      color: #ccc;
+    }
+    .check {
+      margin-left: 6px;
+    }
+    footer {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      background: #1f2937;
+      border-top: 1px solid #374151;
+    }
+    .input-wrapper {
+      display: flex;
+      flex: 1;
+      position: relative;
+    }
+    footer input {
+      width: 100%;
+      padding: 10px 40px 10px 12px;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      background: #374151;
+      color: white;
+      outline: none;
+    }
+    footer button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #60a5fa;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    input:focus, button:focus {
+  outline: none;
+  box-shadow: none;
+}
+  </style>
+</head>
+<body>
+  <header>
+  <img src="qih.svg" id="backBtn" alt="Back" style="width: 30px; height: 30px; cursor: pointer;" />
+    <div class="name" id="headerName"></div>
+    <div class="typing" id="typingStatus"></div>
+  </header>
+  <div id="messages"></div>
+  <footer>
+    <div class="input-wrapper">
+      <input id="input" type="text" placeholder="Tulis pesan..." />
+      <button id="sendBtn">➤</button>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      addDoc,
+      collection,
+      query,
+      orderBy,
+      onSnapshot,
+      updateDoc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBgZX_GKkekzJ8KwxLaAsZiDKm8moTuWAA",
+      authDomain: "room-chat-4f487.firebaseapp.com",
+      projectId: "room-chat-4f487",
+      storageBucket: "room-chat-4f487.appspot.com",
+      messagingSenderId: "429375918482",
+      appId: "1:429375918482:web:c52cbf150d45561024f14b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const messagesBox = document.getElementById("messages");
+    const input = document.getElementById("input");
+    const sendBtn = document.getElementById("sendBtn");
+    const backBtn = document.getElementById("backBtn");
+    const headerName = document.getElementById("headerName");
+    const typingStatus = document.getElementById("typingStatus");
+
+    let chatId = localStorage.getItem("chatId");
+    let chatWith = localStorage.getItem("chatWith");
+
+    if (!chatId || !chatWith) {
+      location.href = "home.html";
+    }
+
+    headerName.textContent = chatWith;
+    let currentUser = null;
+    let currentUsername = "";
+
+    function loadChat() {
+      const messagesRef = collection(db, "chats", chatId, "messages");
+      const q = query(messagesRef, orderBy("timestamp", "asc"));
+
+      onSnapshot(q, snapshot => {
+        messagesBox.innerHTML = "";
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          const div = document.createElement("div");
+          div.className = "msg " + (data.from === currentUsername ? "me" : "you");
+
+          let time = "--:--";
+if (data.timestamp?.toDate) {
+  time = new Date(data.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+} else if (data.clientTime) {
+  time = new Date(data.clientTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+          const check = data.from === currentUsername ? (data.seen ? "✔✔" : "✔") : "";
+
+          const bubble = document.createElement("div");
+          bubble.className = "bubble";
+          bubble.setAttribute("data-id", docSnap.id);
+
+          let pesanTeks = data.text;
+          if (data.edited) pesanTeks += " (diedit)";
+
+          bubble.innerHTML = `
+            <div class="text">${pesanTeks}</div>
+            <div class="meta">${time} <span class="check">${check}</span></div>
+          `;
+          div.appendChild(bubble);
+          messagesBox.appendChild(div);
+
+          if (data.from !== currentUsername && !data.seen) {
+            updateDoc(doc(db, "chats", chatId, "messages", docSnap.id), { seen: true });
+          }
+        });
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+      });
+    }
+
+ onAuthStateChanged(auth, async user => {
+  if (!user || !user.emailVerified) {
+    location.href = "login.html";
+    return;
+  }
+  
+  currentUser = user;
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  currentUsername = userDoc.exists() ? userDoc.data().username : user.email.split("@")[0];
+  
+
+  const chatRef = doc(db, "chats", chatId);
+  await updateDoc(chatRef, {
+    [`readStatus.${currentUsername}`]: Date.now()
+  });
+  
+  loadChat();
+  
+  onSnapshot(doc(db, "chats", chatId, "typing", chatWith), snap => {
+    const typing = snap.exists() ? snap.data().typing : false;
+    typingStatus.textContent = typing ? "Sedang mengetik..." : "";
+  });
+});
+
+    sendBtn.onclick = async () => {
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+      await setDoc(doc(db, "chats", chatId, "typing", currentUsername), { typing: false });
+      const now = new Date();
+await addDoc(collection(db, "chats", chatId, "messages"), {
+  from: currentUsername,
+  to: chatWith,
+  text,
+  seen: false,
+  timestamp: serverTimestamp(),
+  clientTime: now.toISOString(),
+  edited: false
+});
+}
+
+    input.addEventListener("input", async () => {
+      const typing = input.value.trim().length > 0;
+      await setDoc(doc(db, "chats", chatId, "typing", currentUsername), { typing });
+    });
+
+    backBtn.onclick = () => {
+      localStorage.removeItem("chatId");
+      localStorage.removeItem("chatWith");
+      location.href = "home.html";
+    };
+
+    window.addEventListener("pageshow", e => {
+      if (!localStorage.getItem("chatId")) {
+        location.href = "home.html";
+      }
+    });
+    messagesBox.addEventListener("click", async function (e) {
+      const bubble = e.target.closest(".bubble");
+      if (!bubble) return;
+
+      const chatIdInMsg = bubble.getAttribute("data-id");
+      const parentMsg = bubble.closest(".msg");
+      const isMe = parentMsg && parentMsg.classList.contains("me");
+      if (!isMe) return;
+
+      const textDiv = bubble.querySelector(".text");
+      const oldText = textDiv.textContent.replace(" (diedit)", "");
+
+      bubble.innerHTML = `
+        <input type="text" class="edit-input" value="${oldText}" style="width: 100%; padding: 6px; border-radius: 6px; border: none; font-size: 14px;">
+        <div class="meta">
+          <button class="save-edit" style="margin-right: 8px;">Simpan</button>
+          <button class="cancel-edit">Batal</button>
+        </div>
+      `;
+
+      bubble.querySelector(".save-edit").onclick = async () => {
+        const newText = bubble.querySelector(".edit-input").value.trim();
+        if (!newText || newText === oldText) {
+          loadChat();
+          return;
+        }
+
+        await updateDoc(doc(db, "chats", chatId, "messages", chatIdInMsg), {
+          text: newText,
+          edited: true
+        });
+      };
+
+      bubble.querySelector(".cancel-edit").onclick = () => {
+        loadChat();
+      };
+    });
+  </script>
+</body>
+</html>

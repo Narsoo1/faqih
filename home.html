@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home-Qih</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+  .chat-last .badge {
+  background-color: red;
+  color: white;
+  border-radius: 9999px;
+  padding: 2px 6px;
+  font-size: 12px;
+  margin-left: 6px;
+}
+  .menu-social {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  font-size: 20px;
+  padding-top: 4px;
+}
+
+.menu-social a {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.menu-social a:hover {
+  color: #60a5fa;
+}
+  body.light {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+body.light header {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+body.light .chat-item {
+  background-color: #ffffff;
+  color: #111827;
+}
+
+body.light .chat-item:hover {
+  background-color: #f3f4f6;
+}
+
+body.light .chat-last {
+  color: #4b5563;
+}
+
+body.light .chat-status.online {
+  color: #059669;
+}
+
+body.light .chat-status.offline {
+  color: #9ca3af;
+}
+
+body.light #menuPopup,
+body.light #searchPopup,
+body.light #searchInput,
+body.light #searchResults .item,
+body.light .confirm-box {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+body.light #overlay {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body.light #searchResults .item:hover,
+body.light #menuPopup button:hover,
+body.light .confirm-buttons button:hover {
+  background-color: #e5e7eb;
+}
+    body {
+      margin: 0;
+      background-color: #111827;
+      color: white;
+      font-family: 'Inter', sans-serif;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background-color: #1f2937;
+      padding: 16px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    .menu {
+      cursor: pointer;
+      font-size: 24px;
+      user-select: none;
+    }
+    #chatHistory {
+      padding: 80px 16px 16px 16px;
+      min-height: calc(100vh - 80px);
+    }
+    .chat-item {
+      background-color: #1e293b;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .chat-item:hover {
+      background-color: #334155;
+    }
+    .chat-name {
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-status {
+      font-size: 12px;
+      margin-left: 8px;
+    }
+    .chat-status.online {
+      color: #10b981;
+    }
+    .chat-status.offline {
+      color: #6b7280;
+    }
+    .chat-last {
+      font-size: 14px;
+      color: #d1d5db;
+      margin-top: 6px;
+      word-break: break-word;
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 90;
+    }
+
+    #menuPopup {
+      position: fixed;
+      top: 56px; right: 16px;
+      background: #1f2937;
+      border-radius: 6px;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      z-index: 95;
+      min-width: 140px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+    #menuPopup button {
+      padding: 10px;
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    #menuPopup button:hover {
+      background: #374151;
+    }
+
+    #searchPopup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #111827;
+      display: none;
+      flex-direction: column;
+      padding: 16px;
+      z-index: 100;
+    }
+    #searchPopup .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    #searchPopup .top-bar button {
+      background: none;
+      border: none;
+      color: #60a5fa;
+      font-size: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    #searchInput {
+      width: 95%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #1f2937;
+      color: white;
+      font-size: 16px;
+      outline: none;
+      user-select: text;
+    }
+    #searchResults {
+      margin-top: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    #searchResults .item {
+      padding: 10px;
+      border-radius: 4px;
+      background: #1f2937;
+      margin-bottom: 6px;
+      cursor: pointer;
+      user-select: none;
+      word-break: break-word;
+    }
+    #searchResults .item:hover {
+      background: #374151;
+    }
+    #customConfirm {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .confirm-box {
+      background: #1f2937;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      width: 90%;
+      max-width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+
+    .confirm-buttons {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .confirm-buttons button {
+      padding: 8px 16px;
+      background: #374151;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .confirm-buttons button:hover {
+      background: #4b5563;
+    }
+    body.light, body.light * {
+  color: #111827 !important;
+}
+body:not(.light), body:not(.light) * {
+  color: white !important;
+}
+.title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+header .logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+header .logo-title img {
+  height: 40px;
+  display: block;
+}
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-title img {
+  height: 30px;
+  display: block;
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="title">Qih</span>
+</div>
+</div>
+  <div class="menu" id="menuBtn" title="Menu">☰</div>
+</header>
+
+<div id="chatHistory">sabar!</div>
+
+<div id="overlay"></div>
+
+<div id="menuPopup">
+  <button id="searchUserBtn">Cari Username</button>
+  <button id="themeToggleBtn">Light</button>
+  <button id="logoutBtn">Logout</button>
+  <hr style="margin: 8px 0; border-color: #374151;">
+<div class="menu-social">
+  <a href="https://www.instagram.com/qih_stark?igsh=NjM3dWRxaWY4MWx6" target="_blank"><i class="fab fa-instagram"></i></a>
+  <a href="https://x.com/faqihhm_?t=HGzr5kANUbkjyzoib9-Erg&s=09" target="_blank"><i class="fab fa-twitter"></i></a>
+</div>
+</div>
+
+<div id="searchPopup">
+  <div class="top-bar">
+    <div style="font-weight:bold; font-size: 18px; color: white;">Cari Username</div>
+    <button id="closeSearch">Close</button>
+  </div>
+  <input type="text" id="searchInput" placeholder="Masukkan username🍇..." autocomplete="off" />
+  <div id="searchResults"></div>
+</div>
+
+
+<div id="customConfirm">
+  <div class="confirm-box">
+    <div id="confirmMessage">Apakah Anda yakin?</div>
+    <div class="confirm-buttons">
+      <button id="confirmYes">yap</button>
+      <button id="confirmNo">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+  import {
+    getFirestore, collection, doc, getDocs, getDoc, query, where,
+    setDoc, deleteDoc, limit
+  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBgZX_GKkekzJ8KwxLaAsZiDKm8moTuWAA",
+    authDomain: "room-chat-4f487.firebaseapp.com",
+    projectId: "room-chat-4f487",
+    storageBucket: "room-chat-4f487.appspot.com",
+    messagingSenderId: "429375918482",
+    appId: "1:429375918482:web:c52cbf150d45561024f14b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const chatHistory = document.getElementById("chatHistory");
+  const menuBtn = document.getElementById("menuBtn");
+  const menuPopup = document.getElementById("menuPopup");
+  const overlay = document.getElementById("overlay");
+  const searchPopup = document.getElementById("searchPopup");
+  const closeSearch = document.getElementById("closeSearch");
+  const searchInput = document.getElementById("searchInput");
+  const searchResults = document.getElementById("searchResults");
+  const searchUserBtn = document.getElementById("searchUserBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  let currentUser = null;
+  let currentUsername = "";
+
+  menuBtn.onclick = (e) => {
+    e.stopPropagation();
+    menuPopup.style.display = "flex";
+    overlay.style.display = "block";
+  };
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+themeToggleBtn.onclick = () => {
+  const isDark = document.body.classList.toggle("light");
+  localStorage.setItem("theme", isDark ? "light" : "dark");
+  updateThemeLabel();
+  menuPopup.style.display = "none";
+  overlay.style.display = "none";
+};
+
+
+function updateThemeLabel() {
+  const isLight = document.body.classList.contains("light");
+  themeToggleBtn.textContent = isLight ? "Dark" : "Light";
+}
+function applyStoredTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "light") {
+    document.body.classList.add("light");
+  } else {
+    document.body.classList.remove("light");
+  }
+  updateThemeLabel();
+}
+
+applyStoredTheme();
+
+  overlay.onclick = () => {
+    menuPopup.style.display = "none";
+    searchPopup.style.display = "none";
+    overlay.style.display = "none";
+  };
+
+  document.body.onclick = () => {
+    menuPopup.style.display = "none";
+  };
+  menuPopup.onclick = e => e.stopPropagation();
+
+  logoutBtn.onclick = () => {
+    signOut(auth).then(() => location.href = "login.html");
+  };
+
+  searchUserBtn.onclick = () => {
+    menuPopup.style.display = "none";
+    overlay.style.display = "block";
+    searchPopup.style.display = "flex";
+    searchInput.value = "";
+    searchResults.innerHTML = "";
+    searchInput.focus();
+  };
+
+  closeSearch.onclick = () => {
+    searchPopup.style.display = "none";
+    overlay.style.display = "none";
+  };
+
+  function loadChatHistoryFromCache() {
+    const cached = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+    renderChatHistory(cached);
+  }
+
+  async function updateChatHistoryFromFirestore() {
+    if (!currentUsername) return;
+    const q = query(collection(db, "chats"));
+    const snap = await getDocs(q);
+    const chats = [];
+
+    for (const docSnap of snap.docs) {
+      const data = docSnap.data();
+      if (data.users && data.users.includes(currentUsername)) {
+        const readStatus = data.readStatus || {};
+const userLastRead = readStatus[currentUsername] || 0;
+
+const messagesRef = collection(db, `chats/${docSnap.id}/messages`);
+const unreadSnap = await getDocs(query(messagesRef, where("timestamp", ">", userLastRead)));
+const unreadCount = unreadSnap.size;
+        const other = data.users.find(u => u !== currentUsername);
+        const userSnap = await getDocs(query(collection(db, "users"), where("username", "==", other)));
+        if (userSnap.empty) continue;
+        const otherUID = userSnap.docs[0].id;
+        const statusSnap = await getDoc(doc(db, "status", otherUID));
+        const online = statusSnap.exists() && statusSnap.data().state === "online";
+
+        chats.push({
+  id: docSnap.id,
+  name: other,
+  lastMessage: data.lastMessage || "",
+  lastTimestamp: data.lastTimestamp || 0,
+  online: online,
+  unreadCount: unreadCount
+});
+      }
+    }
+
+    chats.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
+    localStorage.setItem("chatHistory", JSON.stringify(chats));
+    renderChatHistory(chats);
+  }
+
+  function renderChatHistory(list) {
+    chatHistory.innerHTML = "";
+    if (list.length === 0) {
+      chatHistory.innerHTML = "<div style='padding:12px;color:gray'>cari username dulu king!</div>";
+      return;
+    }
+    for (const c of list) {
+      const div = document.createElement("div");
+      div.className = "chat-item";
+      div.onclick = () => {
+        localStorage.setItem("chatWith", c.name);
+        localStorage.setItem("chatId", c.id);
+        location.href = "chat.html";
+      };
+      div.oncontextmenu = async (e) => {
+        e.preventDefault();
+        const result = await showConfirm(`Hapus riwayat chat dengan ${c.name}?`);
+        if (result) {
+          await deleteChatHistory(c.id);
+        }
+      };
+      div.innerHTML = `
+        <div class="chat-name">
+          ${c.name}
+          <span class="chat-status ${c.online ? "online" : "offline"}">
+            ${c.online ? "● online" : "○ offline"}
+          </span>
+        </div>
+     <div class="chat-last">
+  ${c.lastMessage}
+  ${c.unreadCount > 0 ? `<span class="badge">${c.unreadCount}</span>` : ""}
+</div>
+      `;
+      chatHistory.appendChild(div);
+    }
+  }
+
+ async function deleteChatHistory(chatId) {
+  const messagesRef = collection(db, `chats/${chatId}/messages`);
+  const snapshot = await getDocs(messagesRef);
+  const deletions = snapshot.docs.map(doc => deleteDoc(doc.ref));
+  await Promise.all(deletions);
+  await deleteDoc(doc(db, "chats", chatId));
+  const cached = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+  const updated = cached.filter(c => c.id !== chatId);
+  localStorage.setItem("chatHistory", JSON.stringify(updated));
+  renderChatHistory(updated);
+}
+
+  onAuthStateChanged(auth, async user => {
+    if (!user || !user.emailVerified) {
+      location.href = "login.html";
+      return;
+    }
+    currentUser = user;
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    currentUsername = docSnap.exists() ? docSnap.data().username : user.email.split("@")[0];
+    localStorage.removeItem("chatId");
+    localStorage.removeItem("chatWith");
+    loadChatHistoryFromCache();
+    updateChatHistoryFromFirestore();
+  });
+
+  searchInput.addEventListener("input", async () => {
+    const v = searchInput.value.trim().toLowerCase();
+    searchResults.innerHTML = "";
+    if (!v) return;
+    const q = query(
+      collection(db, "users"),
+      where("username", ">=", v),
+      where("username", "<=", v + "\uf8ff"),
+      limit(1)
+    );
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      searchResults.innerHTML = `<div style="padding:8px;color:#ccc">Username tidak ditemukan</div>`;
+      return;
+    }
+    const docSnap = snap.docs[0];
+    const data = docSnap.data();
+    const name = data.username;
+    const div = document.createElement("div");
+    div.className = "item";
+    if (name === currentUsername) {
+      div.textContent = name + " (Itu kamu sendiri!)";
+      div.style.color = "#facc15";
+    } else {
+      div.textContent = name;
+      div.onclick = async () => {
+        overlay.click();
+        const chatId = [currentUsername, name].sort().join("_");
+        const chatRef = doc(db, "chats", chatId);
+        const existing = await getDoc(chatRef);
+        if (!existing.exists()) {
+          await setDoc(chatRef, {
+            users: [currentUsername, name],
+            createdAt: Date.now(),
+            lastMessage: "",
+            lastTimestamp: 0
+          });
+        }
+        localStorage.setItem("chatWith", name);
+        localStorage.setItem("chatId", chatId);
+        location.href = "chat.html";
+      };
+    }
+    searchResults.appendChild(div);
+  });
+  function showConfirm(message) {
+    return new Promise(resolve => {
+      const box = document.getElementById("customConfirm");
+      document.getElementById("confirmMessage").textContent = message;
+      box.style.display = "flex";
+
+      const yesBtn = document.getElementById("confirmYes");
+      const noBtn = document.getElementById("confirmNo");
+
+      const cleanup = () => {
+        box.style.display = "none";
+        yesBtn.onclick = null;
+        noBtn.onclick = null;
+      };
+
+      yesBtn.onclick = () => {
+        cleanup();
+        resolve(true);
+      };
+      noBtn.onclick = () => {
+        cleanup();
+        resolve(false);
+      };
+    });
+  }
+</script>
+</body>
+</html>

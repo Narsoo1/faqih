@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register - Qih</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+
+  <style>
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #1f2937;
+      color: #f9fafb;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .toast.show {
+      opacity: 1;
+    }
+    input:focus {
+      outline: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col min-h-screen">
+
+  <main class="flex-grow flex flex-col items-center pt-16">
+    <div class="bg-gray-800 px-6 py-8 rounded-xl w-[90%] max-w-sm">
+      <h2 class="text-2xl font-bold mb-6 text-center">orang pusing</h2>
+
+      <input id="registerEmail" type="email" placeholder="Email"
+        class="w-full p-3 mb-4 rounded bg-gray-700 border-none" />
+
+      <input id="registerPassword" type="password" placeholder="Password"
+        class="w-full p-3 mb-4 rounded bg-gray-700 border-none" />
+
+      <button id="registerBtn" class="bg-blue-500 hover:bg-blue-600 w-full py-2 rounded">Daftar</button>
+      <button onclick="window.location.href='login.html'"
+        class="mt-4 text-sm text-blue-400 hover:underline block w-full text-center">area login!</button>
+    </div>
+  </main>
+
+  <div id="toastContainer"></div>
+
+  <footer class="bg-gray-800 py-4 text-center">
+    <p class="text-sm text-gray-400 mb-2">ID:</p>
+    <div class="flex justify-center space-x-6 text-white text-2xl">
+      <a href="https://x.com/faqihhm_?t=HGzr5kANUbkjyzoib9-Erg&s=09" target="_blank"><i class="fab fa-twitter"></i></a>
+      <a href="https://www.instagram.com/qih_stark?igsh=NjM3dWRxaWY4MWx6" target="_blank"><i class="fab fa-instagram"></i></a>
+    </div>
+  </footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      sendEmailVerification,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBgZX_GKkekzJ8KwxLaAsZiDKm8moTuWAA",
+      authDomain: "room-chat-4f487.firebaseapp.com",
+      projectId: "room-chat-4f487",
+      storageBucket: "room-chat-4f487.appspot.com",
+      messagingSenderId: "429375918482",
+      appId: "1:429375918482:web:c52cbf150d45561024f14b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const showToast = (message) => {
+      const toast = document.createElement("div");
+      toast.className = "toast show";
+      toast.textContent = message;
+      document.getElementById("toastContainer").appendChild(toast);
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    };
+
+    document.getElementById("registerBtn").onclick = async () => {
+      const email = document.getElementById("registerEmail").value.trim();
+      const password = document.getElementById("registerPassword").value.trim();
+
+      if (!email || !password) {
+        showToast("Email dan password wajib diisi.");
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          username: email.split("@")[0].toLowerCase()
+        });
+
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+const user = userCredential.user;
+
+await sendEmailVerification(user, {
+  url: 'https://qihapp.vercel.app/verivikasi.html',
+  handleCodeInApp: true
+});
+
+await deleteUser(user); 
+showToast("done silahkan login 🐈.");
+        
+        setTimeout(async () => {
+          await signOut(auth);
+          window.location.replace("login.html?registered=true");
+        }, 1500);
+
+      } catch (error) {
+        console.error("REGISTRATION ERROR:", error.code, error.message);
+        let errorMsg = "Gagal daftar.";
+        if (error.code === "auth/email-already-in-use") {
+          errorMsg = "Email sudah terdaftar.";
+        } else if (error.code === "auth/invalid-email") {
+          errorMsg = "Format email tidak valid.";
+        } else if (error.code === "auth/weak-password") {
+          errorMsg = "Password minimal 6 karakter.";
+        }
+        showToast(errorMsg);
+      }
+    };
+  </script>
+</body>
+</html>
