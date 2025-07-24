@@ -1,11 +1,15 @@
 {
-  "name": "ChatApp",
-  "short_name": "ChatApp",
+  "name": "QIH",
+  "short_name": "Qih",
+  "description": "A simple chat application built with Firebase and web technologies.",
+  "id": "/",
   "start_url": "index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "orientation": "portrait",
+  "lang": "id",
   "icons": [
     {
       "src": "faqih.png",
@@ -17,5 +21,16 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "oke.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "label": "Beranda ChatApp"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "auto"
+  }
 }
