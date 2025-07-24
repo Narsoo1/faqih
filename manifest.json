@@ -1,43 +1,31 @@
 {
-  "name": "QIH",
-  "short_name": "QIH",
-  "description": "A simple chat application built with Firebase and PWA support.",
-  "start_url": "index.html",
-  "scope": "./",
+  "name": "Qih",
+  "short_name": "Qih",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "orientation": "portrait",
-  "lang": "id",
-  "dir": "ltr",
-  "prefer_related_applications": false,
-  "categories": ["chat", "social"],
   "icons": [
     {
-      "src": "faqih.png",
+      "src": "/faqih.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "faqih.png",
+      "src": "/faqih.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "shortcuts": [
-    {
-      "name": "Buka Obrolan",
-      "short_name": "Obrolan",
-      "url": "/chat.html",
-      "icons": [{ "src": "faqih.png", "sizes": "96x96", "type": "image/png" }]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "oke.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "label": "Tampilan utama ChatApp"
-    }
+  "scope_extensions": [
+    "https://faqih-smoky.vercel.app/index.html",
+    "https://faqih-smoky.vercel.app/login.html",
+    "https://faqih-smoky.vercel.app/register.html",
+    "https://faqih-smoky.vercel.app/chat.html",
+    "https://faqih-smoky.vercel.app/reset.html",
+    "https://faqih-smoky.vercel.app/password.html",
+    "https://faqih-smoky.vercel.app/verivikasi.html",
+    "https://faqih-smoky.vercel.app/intro.html"
   ]
 }
