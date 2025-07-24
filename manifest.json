@@ -1,11 +1,16 @@
 {
+  "id": "/",
   "name": "Qih",
   "short_name": "Qih",
+  "description": "A simple and modern chat app built with Firebase and PWA support.",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "orientation": "portrait",
+  "launch_handler": {
+    "client_mode": "auto"
+  },
   "icons": [
     {
       "src": "/faqih.png",
@@ -16,6 +21,13 @@
       "src": "/faqih.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/faqih.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "scope_extensions": [
